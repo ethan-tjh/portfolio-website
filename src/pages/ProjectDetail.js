@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProjects, deleteProject, getProjectImages } from "../services/api";
+import { getProjects, deleteProject, getProjectImages, getProjectTags } from "../services/api";
 export default function ProjectDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
