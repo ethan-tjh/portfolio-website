@@ -28,7 +28,15 @@ export default function Contact() {
                 },
                 body: JSON.stringify(formData)
             });
-            const data = await response.json();
+            const contentType = response.headers.get("content-type") || "";
+            let data = null;
+            if (contentType.includes("application/json")) {
+            data = await response.json();
+            } else {
+            const text = await response.text();
+            data = { error: text };
+            }
+            if (!response.ok) throw new Error(data?.error || `HTTP ${response.status}`);
             if (response.ok) {
                 setStatus({ 
                     type: 'success', 
