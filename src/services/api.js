@@ -52,3 +52,8 @@ export async function getSkills() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
 }
+export async function getProjectTags(id) {
+    const res = await fetch(`${API_URL}/projects/${id}/tags`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+}

@@ -6,6 +6,7 @@ export default function ProjectDetail() {
     const navigate = useNavigate();
     const [project, setProject] = useState(null);
     const [images, setImages] = useState([]);
+    const [tags, setTags] = useState([]);
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
@@ -24,6 +25,8 @@ export default function ProjectDetail() {
                 } else if (found?.img) {
                     setImages([`/images/${found.img}`]);
                 }
+                const projectTags = await getProjectTags(id);
+                setTags(projectTags);
             } catch (err) {
                 console.error("Failed to load Project", err);
                 setError("Failed to load Project");
@@ -120,11 +123,18 @@ export default function ProjectDetail() {
                     <div className="project-divider"></div>
                     <div className="project-section">
                         <h2>Technologies Used</h2>
-                        <ul className="project-features">
-                            {["React", "CSS", "JavaScript", "Node.js"].map((tech, index) => (
-                                <li key={index}><span className="feature-dot"></span>{tech}</li>
-                            ))}
-                        </ul>
+                        {tags.length > 0 ? (
+                            <ul className="project-features">
+                                {tags.map((tag) => (
+                                    <li key={tag.id}>
+                                        <span className="feature-dot"></span>
+                                        {tag.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="no-tags">No technologies listed for this project.</p>
+                        )}
                     </div>
                     <div className="project-actions">
                         <button 
