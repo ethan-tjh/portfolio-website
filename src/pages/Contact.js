@@ -29,7 +29,7 @@ export default function Contact() {
                 email: formData.email,
                 subject: formData.subject,
                 message: formData.message,
-                from_name: "Ethan Tan's Portfolio",
+                from_name: "Ethan Tan Portfolio",
                 replyto: formData.email
             };
 
