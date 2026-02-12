@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 export default function Contact() {
     const [formData, setFormData] = useState({
         name: '',
@@ -8,6 +9,8 @@ export default function Contact() {
     });
     const [status, setStatus] = useState({ type: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const hcaptchaRef = useRef(null);
+    const [hToken, setHToken] = useState("");
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -23,6 +26,12 @@ export default function Contact() {
         try {
             const WEB3FORMS_KEY = process.env.REACT_APP_WEB3FORMS_KEY;
 
+            if (!hToken) {
+                setStatus({ type: "error", message: "Please complete the captcha." });
+                setIsSubmitting(false);
+                return;
+            }
+
             const payload = {
                 access_key: WEB3FORMS_KEY,
                 name: formData.name,
@@ -30,7 +39,8 @@ export default function Contact() {
                 subject: formData.subject,
                 message: formData.message,
                 from_name: "Ethan Tan Portfolio",
-                replyto: formData.email
+                replyto: formData.email,
+                "h-captcha-response": hToken,
             };
 
             const response = await fetch("https://api.web3forms.com/submit", {
@@ -53,6 +63,9 @@ export default function Contact() {
             });
 
             setFormData({ name: '', email: '', subject: '', message: '' });
+            hcaptchaRef.current?.resetCaptcha();
+            setHToken("");
+
 
         } catch (error) {
             setStatus({
@@ -131,6 +144,14 @@ export default function Contact() {
                                 required
                             />
                         </div>
+                        <div className="form-group">
+                            <HCaptcha
+                                sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY}
+                                onVerify={(token) => setHToken(token)}
+                                onExpire={() => setHToken("")}
+                                ref={hcaptchaRef}
+                            />
+                        </div>
                         {status.message && (
                             <div className={`form-status ${status.type}`}>
                                 {status.message}
@@ -139,9 +160,9 @@ export default function Contact() {
                         <button 
                             type="submit" 
                             className="submit-btn"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || !hToken}
                         >
-                            {isSubmitting ? 'Sending...' : 'Send Message'}
+                            {isSubmitting ? "Sending..." : !hToken ? "Complete Captcha" : "Send Message"}
                         </button>
                     </form>
                 </div>
