@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { getSkills } from "../services/api";
+import { getSkills, getCertificates } from "../services/api";
 
 export default function AboutMe() {
     const name = "Ethan Tan";
     const studyYear = 2;
     const [skills, setSkills] = useState([]);
+    const [certificates, setCertificates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [showCertificates, setShowCertificates] = useState(false);
+    const [selectedCertificate, setSelectedCertificate] = useState(null);
 
     useEffect(() => {
         async function loadSkills() {
@@ -53,6 +56,31 @@ export default function AboutMe() {
         }
         loadSkills();
     }, []);
+    useEffect(() => {
+        async function loadCertificates() {
+            try {
+                const data = await getCertificates();
+                setCertificates(data);
+            } catch (err) {
+                console.error("Failed to load certificates", err);
+            }
+        }
+        loadCertificates();
+    }, []);
+
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    };
+
+    const openCertificate = (cert) => {
+        setSelectedCertificate(cert);
+    };
+
+    const closeCertificate = () => {
+        setSelectedCertificate(null);
+    };
 
     return (
         <main className="about-page">
@@ -86,6 +114,51 @@ export default function AboutMe() {
                             and professional journey.
                         </p>
                     </div>
+                    <div className="certificates-button-container">
+                        <button 
+                            className="certificates-toggle-btn"
+                            onClick={() => setShowCertificates(!showCertificates)}
+                        >
+                            {showCertificates ? '▼' : '▶'} Certificates ({certificates.length})
+                        </button>
+                    </div>
+                    {showCertificates && (
+                        <div className="certificates-section">
+                            {certificates.length > 0 ? (
+                                <div className="certificates-table-container">
+                                    <table className="certificates-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Certificate Name</th>
+                                                <th>Issuer</th>
+                                                <th>Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {certificates.map((cert) => (
+                                                <tr key={cert.id}>
+                                                    <td className="cert-name">{cert.name}</td>
+                                                    <td className="cert-issuer">{cert.issuer || 'N/A'}</td>
+                                                    <td className="cert-date">{formatDate(cert.issue_date)}</td>
+                                                    <td className="cert-action">
+                                                        <button 
+                                                            className="view-cert-btn"
+                                                            onClick={() => openCertificate(cert)}
+                                                        >
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <p className="no-certificates">No certificates available.</p>
+                            )}
+                        </div>
+                    )}
                     <div className="skills-section">
                         <h2>Skills</h2>
                         {loading ? (
@@ -115,6 +188,44 @@ export default function AboutMe() {
                     </div>
                 </div>
             </div>
+            {selectedCertificate && (
+                <div className="certificate-modal-overlay" onClick={closeCertificate}>
+                    <div className="certificate-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close-btn" onClick={closeCertificate}>
+                            ✕
+                        </button>
+                        <div className="modal-header">
+                            <h2>{selectedCertificate.name}</h2>
+                            {selectedCertificate.issuer && (
+                                <p className="modal-issuer">Issued by {selectedCertificate.issuer}</p>
+                            )}
+                            {selectedCertificate.issue_date && (
+                                <p className="modal-date">{formatDate(selectedCertificate.issue_date)}</p>
+                            )}
+                        </div>
+                        <div className="modal-body">
+                            {selectedCertificate.description && (
+                                <p className="modal-description">{selectedCertificate.description}</p>
+                            )}
+                            <iframe
+                                src={selectedCertificate.certificate_url}
+                                className="certificate-iframe"
+                                title={selectedCertificate.name}
+                            />
+                            <div className="modal-actions">
+                                <a 
+                                    href={selectedCertificate.certificate_url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="open-new-tab-btn"
+                                >
+                                    Open in New Tab
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

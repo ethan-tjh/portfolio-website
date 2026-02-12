@@ -57,3 +57,8 @@ export async function getProjectTags(id) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
 }
+export async function getCertificates() {
+    const res = await fetch(`${API_URL}/certificates`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+}
