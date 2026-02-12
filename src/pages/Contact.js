@@ -16,53 +16,53 @@ export default function Contact() {
         }));
     };
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setStatus({ type: '', message: '' });
+        e.preventDefault();
+        setIsSubmitting(true);
+        setStatus({ type: '', message: '' });
 
-    try {
-        const WEB3FORMS_KEY = process.env.REACT_APP_WEB3FORMS_KEY;
+        try {
+            const WEB3FORMS_KEY = process.env.REACT_APP_WEB3FORMS_KEY;
 
-        const payload = {
-            access_key: WEB3FORMS_KEY,
-            name: formData.name,
-            email: formData.email,
-            subject: formData.subject,
-            message: formData.message,
-            from_name: "Ethan Tan's Portfolio",
-            replyto: formData.email
-        };
+            const payload = {
+                access_key: WEB3FORMS_KEY,
+                name: formData.name,
+                email: formData.email,
+                subject: formData.subject,
+                message: formData.message,
+                from_name: "Ethan Tan's Portfolio",
+                replyto: formData.email
+            };
 
-        const response = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (!data.success) {
-            throw new Error(data.message || "Failed to send message");
+            if (!data.success) {
+                throw new Error(data.message || "Failed to send message");
+            }
+
+            setStatus({
+                type: 'success',
+                message: 'Thank you! Your message has been sent successfully.'
+            });
+
+            setFormData({ name: '', email: '', subject: '', message: '' });
+
+        } catch (error) {
+            setStatus({
+                type: 'error',
+                message: error.message || 'Oops! Something went wrong. Please try again later.'
+            });
+        } finally {
+            setIsSubmitting(false);
         }
-
-        setStatus({
-            type: 'success',
-            message: 'Thank you! Your message has been sent successfully.'
-        });
-
-        setFormData({ name: '', email: '', subject: '', message: '' });
-
-    } catch (error) {
-        setStatus({
-            type: 'error',
-            message: error.message || 'Oops! Something went wrong. Please try again later.'
-        });
-    } finally {
-        setIsSubmitting(false);
-    }
-};
+    };
     return (
         <main className="contact-page">
             <div className="contact-left-panel">
