@@ -872,9 +872,8 @@ body {
   position: fixed;
   top: 24px;
   right: 24px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
   width: 48px;
   height: 48px;
@@ -885,11 +884,13 @@ body {
   align-items: center;
   justify-content: center;
   transition: background-color var(--transition-speed),
-              transform var(--transition-speed);
+              transform var(--transition-speed),
+              border-color var(--transition-speed);
   z-index: 2001;
 }
 .enlarge-close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.95);
+  border-color: #ffffff;
   transform: rotate(90deg);
 }
 .enlarge-image-container {
@@ -925,9 +926,8 @@ body {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
   width: 56px;
   height: 56px;
@@ -938,11 +938,13 @@ body {
   align-items: center;
   justify-content: center;
   transition: background-color var(--transition-speed),
-              transform var(--transition-speed);
+              transform var(--transition-speed),
+              border-color var(--transition-speed);
   z-index: 2001;
 }
 .enlarge-nav-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.95);
+  border-color: #ffffff;
   transform: translateY(-50%) scale(1.1);
 }
 .enlarge-prev-btn {
@@ -956,9 +958,8 @@ body {
   bottom: -50px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
   padding: 10px 20px;
   border-radius: 24px;
